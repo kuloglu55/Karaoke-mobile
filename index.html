@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahne Karaoke Canlı</title>
+<style>
+:root{--a:#ff4fd8;--b:#6a5cff;--c:#12082e;--g:rgba(255,255,255,.11);--l:rgba(255,255,255,.26);--t:#fff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=okyanus]{--a:#27e1ff;--b:#2a6bff;--c:#04162e}
+:root[data-theme=gunbatimi]{--a:#ffb347;--b:#ff4d6d;--c:#2b0a1a}
+:root[data-theme=orman]{--a:#7dffb0;--b:#12a37f;--c:#04201a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;padding:14px 14px 110px;font-family:"Avenir Next","Trebuchet MS",system-ui,sans-serif;color:var(--t);background:radial-gradient(circle at 10% 8%,var(--b),transparent 55%),radial-gradient(circle at 90% 92%,var(--a),transparent 52%),var(--c);background-attachment:fixed;transition:background .5s}
+.g{background:var(--g);border:1px solid var(--l);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-radius:22px;padding:14px;margin-bottom:12px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0}
+.b,select{background:var(--g);color:var(--t);border:1px solid var(--l);border-radius:14px;padding:9px 12px;font:inherit;font-size:.9rem;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.b.on,.big{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--a)}
+label{display:block;margin:10px 0;font-size:.9rem}
+h3{margin:18px 4px 8px}
+.pg{display:none}.pg.on{display:block}
+#ly{position:relative;height:32vh;overflow-y:auto;-webkit-overflow-scrolling:touch; touch-action:pan-y;text-align:center;padding:6vh 8px;border-radius:14px;background:rgba(0,0,0,.18)}
+#ly p{margin:16px 0;font-size:1.2rem;opacity:.55;transition:all .25s;cursor:pointer;padding:6px 10px;border-radius:10px;user-select:none}
+#ly p:active{background:rgba(255,255,255,.1)}
+#ly p.on{opacity:1;font-size:1.5rem;font-weight:700;color:var(--a);text-shadow:0 0 18px var(--a);background:rgba(255,255,255,.06)}
+.meter{height:6px;border-radius:9px;background:var(--g);overflow:hidden;margin-top:12px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+#nt{margin-top:8px;font-size:1.05rem;text-align:center}
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;padding:8px;margin:0;z-index:5}
+nav button{flex:1;background:none;border:0;color:var(--t);font:inherit;font-size:.78rem;padding:8px 2px;border-radius:16px;opacity:.65}
+nav button.on{opacity:1;background:var(--g);box-shadow:inset 0 0 0 1px var(--l)}
+nav button span{display:block;font-size:1.3rem}
+small{opacity:.75;display:block;line-height:1.4}
+#st{margin-top:10px;text-align:center;font-size:.92rem;min-height:1.4em}
+</style></head><body>
+<header class="g row"><b style="font-size:1.15rem">🎤 Sahne</b><span id="sn" style="opacity:.8;font-size:.85rem">Demo alt yapı</span></header>
+
+<section class="pg on" id="p0">
+ <div class="g">
+  <div class="row" style="margin-top:0;margin-bottom:8px">
+   <small style="opacity:.85">📝 Sözler (Satıra dokun / kaydır)</small>
+   <button class="b" id="lyMode" style="padding:5px 10px;font-size:.78rem">✋ Elle Kaydır</button>
+  </div>
+  <div id="ly"></div>
+  <input type="range" id="sk" min="0" max="38" step=".1" value="0" style="margin-top:12px">
+  <div class="row">
+   <button class="b" id="pl">▶ Çal</button>
+   <button class="b" id="mc">🎙 Mikrofon: Kapalı</button>
+   <button class="b on" id="mon">🎧 Sesimi Duy: Açık</button>
+   <button class="b big" id="rc">⏺ Kayıt</button>
+  </div>
+  <div class="row" style="margin-top:6px">
+   <select id="micSel" style="width:100%;font-size:.82rem;padding:8px"><option value="">🎙 Varsayılan Mikrofon (Cihaz Seç)</option></select>
+  </div>
+  <div class="meter"><i id="lv"></i></div>
+  <div id="st">🎙 Mikrofon’a basarak başla.</div>
+ </div>
+ <div class="g">
+  <div class="row"><b>🎛 Canlı ayar</b><button class="b" id="at2">Autotune: Kapalı</button></div>
+  <div id="qs"></div>
+  <label>Tempo <b id="tv">1.00×</b><input type="range" id="tp" min=".6" max="1.6" step=".01" value="1"></label>
+ </div>
+ <h3>Kayıtlarım</h3>
+ <div id="rl"><small>Henüz kayıt yok. Kayıt’a basarak başlayabilirsin.</small></div>
+</section>
+
+<section class="pg" id="p1">
+ <div class="g">
+  <div class="row"><b>🎚 Autotune</b><button class="b" id="at">Kapalı</button></div>
+  <div class="row"><select id="ky"></select><select id="sc"><option value="0">Kromatik</option><option value="1">Majör</option><option value="2">Minör</option></select></div>
+  <label>Düzeltme hızı (yumuşak ↔ robot)<input type="range" id="sp" min="0" max="1" step=".01" value=".5"></label>
+  <div id="nt">Açınca mikrofon izni istenir</div>
+ </div>
+ <div class="g"><b>✨ Ses efekti</b><div class="row" id="pr"></div><div id="sl"></div></div>
+</section>
+
+<section class="pg" id="p2">
+ <div class="g">
+  <div class="row"><button class="b" id="dm">🎵 Demo alt yapı</button></div>
+  <div class="row"><label class="b">📁 Alt yapı yükle<input type="file" id="fa" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.flac" hidden></label>
+  <label class="b">📝 Söz yükle<input type="file" id="fl" accept=".txt,.lrc,text/plain" hidden></label></div>
+  <small>Önce alt yapıyı (mp3, m4a, wav), sonra sözleri yükle. Sözler varsayılan olarak elle kaydırılır; istersen ana ekrandan "Otomatik Kaydır" moduna alabilirsin.</small>
+ </div>
+</section>
+
+<section class="pg" id="p3">
+ <div class="g"><b>🎨 Cam tema</b>
+  <div class="row"><button class="b" data-t="neon">Neon</button><button class="b" data-t="okyanus">Okyanus</button><button class="b" data-t="gunbatimi">Gün batımı</button><button class="b" data-t="orman">Orman</button></div>
+ </div>
+</section>
+
+<nav class="g">
+ <button class="on"><span>🎤</span>Söyle</button><button><span>🎛</span>Efekt</button><button><span>🎵</span>Şarkı</button><button><span>🎨</span>Tema</button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],SC=[[0,1,2,3,4,5,6,7,8,9,10,11],[0,2,4,5,7,9,11],[0,2,3,5,7,8,10]];
+const at={on:false,key:0,sc:0,sp:.5},V={vg:1,mg:.7,rg:.3,eg:.15,lo:0,hi:0};
+
+let ctx,mg,vg,lo,hi,rg,eg,conv,pt,rd,micSrc,micStream,rec,chunks=[],lines=[],cur=-1,w=0,ph=0,r=1,SZ=1.6,demoURL;
+let vocalBus,monGain,outBus,recBus,keepAliveOsc;
+let micOn=false,monOn=true,autoScroll=false,userScrolling=false,scrollTmr,wakeLock=null;
+
+const music=new Audio();
+music.preload='auto';
+music.playsInline=true;
+music.setAttribute('playsinline','');
+music.setAttribute('webkit-playsinline','');
+
+const L=32768,M=L-1,buf=new Float32Array(L),tmp=new Float32Array(2200);
+const rd1=d=>{const p=w-d,i=Math.floor(p),f=p-i;return buf[i&M]*(1-f)+buf[(i+1)&M]*f};
+const say=t=>{$('#st').textContent=t};
+
+/* --- Ekran Uyanık Tutma & Arka Plan Medya Kontrolü --- */
+async function reqWakeLock(){
+ if('wakeLock' in navigator && !wakeLock){
+  try{wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null})}catch(e){}
+ }
+}
+function setupMediaSession(){
+ if('mediaSession' in navigator){
+  navigator.mediaSession.metadata=new MediaMetadata({title:$('#sn').textContent||'Sahne Karaoke',artist:'Canlı Performans'});
+  navigator.mediaSession.setActionHandler('play',()=>{ctx&&ctx.resume();music.play()});
+  navigator.mediaSession.setActionHandler('pause',()=>{music.pause()});
+ }
+}
+document.addEventListener('visibilitychange',async()=>{
+ if(ctx && ctx.state==='suspended') try{await ctx.resume()}catch(e){}
+ if(document.visibilityState==='visible' && !music.paused) reqWakeLock();
+});
+
+/* --- Autotune: YIN pitch detection --- */
+function yin(x,sr){const H=1024,mn=Math.max(2,sr/800|0),mx=Math.min(1100,sr/80|0),d=new Float32Array(mx+2);let run=0;d[0]=1;
+ for(let t=1;t<=mx;t++){let s=0;for(let i=0;i<H;i++){const e=x[i]-x[i+t];s+=e*e}run+=s;d[t]=run?s*t/run:1}
+ for(let t=mn;t<mx;t++)if(d[t]<.15){while(t+1<mx&&d[t+1]<d[t])t++;const a=d[t-1],b=d[t],c=d[t+1],q=a-2*b+c;return sr/(t+(q?(a-c)/(2*q):0))}
+ return 0}
+
+function tune(e){
+ const x=e.inputBuffer.getChannelData(0),y=e.outputBuffer.getChannelData(0),n=x.length,sr=ctx.sampleRate;
+ if(!micOn){y.fill(0);$('#lv').style.width='0%';return}
+ let s=0;for(let i=0;i<n;i++)s+=x[i]*x[i];const lv=Math.sqrt(s/n);$('#lv').style.width=Math.min(100,lv*350)+'%';
+ if(!at.on){y.set(x);return}
+ for(let i=0;i<2200;i++)tmp[i]=buf[(w-2200+i)&M];
+ const f=lv>.012?yin(tmp,sr):0;let tg=1;
+ if(f){const m=69+12*Math.log2(f/440),rm=Math.round(m);let bn=rm,bd=9;
+  for(let k=rm-2;k<=rm+2;k++){const dd=Math.abs(k-m);if(SC[at.sc].includes(((k-at.key)%12+12)%12)&&dd<bd){bd=dd;bn=k}}
+  tg=2**((bn-m)/12);$('#nt').textContent='🎶 '+NN[(rm%12+12)%12]+' → '+NN[(bn%12+12)%12]}
+ tg=Math.min(1.2,Math.max(.84,tg));
+ const r1=r+(tg-r)*(.12+.88*at.sp),W=sr*.045|0;
+ for(let i=0;i<n;i++){const rr=r+(r1-r)*i/n;buf[w]=x[i];w=(w+1)&M;ph+=(1-rr)/W;ph-=Math.floor(ph);
+  const g=.5-.5*Math.cos(6.2832*ph);y[i]=rd1(ph*W)*g+rd1(((ph+.5)%1)*W)*(1-g)}
+ r=r1
+}
+
+/* --- Ses Grafiği (Kayıt ve Kulaklık Monitörü Ayrı) --- */
+function setIR(s){const sr=ctx.sampleRate,n=sr*s|0,b=ctx.createBuffer(2,n,sr);
+ for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n)**3}conv.buffer=b}
+
+function ap(){
+ if(!ctx)return;
+ vg.gain.value=micOn?V.vg:0;
+ mg.gain.value=V.mg;
+ rg.gain.value=V.rg;
+ eg.gain.value=V.eg;
+ lo.gain.value=V.lo;
+ hi.gain.value=V.hi;
+ if(monGain)monGain.gain.value=monOn?1:0;
+}
+
+function init(){
+ if(ctx)return;
+ ctx=new(window.AudioContext||window.webkitAudioContext)();
+ const mk=t=>ctx.createBiquadFilter(),src=ctx.createMediaElementSource(music),dl=ctx.createDelay(1),fb=ctx.createGain(),dry=ctx.createGain(),comp=ctx.createDynamicsCompressor();
+ mg=ctx.createGain();vg=ctx.createGain();rg=ctx.createGain();eg=ctx.createGain();conv=ctx.createConvolver();
+ vocalBus=ctx.createGain();monGain=ctx.createGain();outBus=ctx.createGain();recBus=ctx.createGain();
+ rd=ctx.createMediaStreamDestination();
+ pt=ctx.createScriptProcessor(1024,1,1);pt.onaudioprocess=tune;
+ lo=mk();lo.type='lowshelf';lo.frequency.value=200;hi=mk();hi.type='highshelf';hi.frequency.value=4000;
+ dl.delayTime.value=.32;fb.gain.value=.35;
+
+ // Müzik hem kulaklığa (outBus) hem kayda (recBus) gider
+ src.connect(mg);mg.connect(outBus);mg.connect(recBus);
+
+ // Mikrofon işleme ve efekt zinciri -> vocalBus
+ pt.connect(lo);lo.connect(hi);hi.connect(comp);comp.connect(vg);
+ vg.connect(dry);dry.connect(vocalBus);
+ vg.connect(conv);conv.connect(rg);rg.connect(vocalBus);
+ vg.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(eg);eg.connect(vocalBus);
+
+ // vocalBus her zaman kayda (recBus) gider; kulaklığa (outBus) ise sadece monGain açıksa gider
+ vocalBus.connect(recBus);
+ vocalBus.connect(monGain);
+ monGain.connect(outBus);
+
+ outBus.connect(ctx.destination);
+ recBus.connect(rd);
+
+ // Mikrofon değiştirilirken MediaRecorder'ın kesilmemesi için sessiz sinyal üreteci
+ keepAliveOsc=ctx.createOscillator();
+ const kaGain=ctx.createGain();kaGain.gain.value=0.00001;
+ keepAliveOsc.connect(kaGain);kaGain.connect(recBus);keepAliveOsc.start();
+
+ setIR(SZ);ap();
+}
+
+/* --- Mikrofon Yönetimi ve Cihaz Seçimi --- */
+async function updateMicList(){
+ if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices)return;
+ try{
+  const devs=await navigator.mediaDevices.enumerateDevices();
+  const mics=devs.filter(d=>d.kind==='audioinput');
+  const sel=$('#micSel'),curVal=sel.value;
+  sel.innerHTML='<option value="">🎙 Varsayılan Giriş (iPhone / Kulaklık Seç)</option>';
+  mics.forEach((m,i)=>{
+   const opt=document.createElement('option');
+   opt.value=m.deviceId;
+   opt.textContent='🎙 '+(m.label||('Mikrofon '+(i+1)));
+   sel.append(opt);
+  });
+  if(curVal && [...sel.options].some(o=>o.value===curVal))sel.value=curVal;
+ }catch(e){}
+}
+
+async function startMic(forceNew=false){
+ init();await ctx.resume();
+ if(micSrc && !forceNew && micStream && micStream.active){
+  micOn=true;updateMicUI();return true;
+ }
+ say('Mikrofon bağlanıyor…');
+ const md=navigator.mediaDevices;
+ if(!md||!md.getUserMedia){say('Tarayıcı mikrofona izin vermiyor. Safari’de doğrudan aç.');return false}
+ const devId=$('#micSel').value;
+ const audioCfg={echoCancellation:false,noiseSuppression:false,autoGainControl:false};
+ if(devId)audioCfg.deviceId={exact:devId};
+
+ let s;
+ try{s=await md.getUserMedia({audio:audioCfg})}
+ catch(e){
+  try{s=await md.getUserMedia({audio:devId?{deviceId:{ideal:devId}}:true})}
+  catch(e2){say('Mikrofon açılamadı ('+e2.name+'). Tarayıcı iznini kontrol et.');return false}
+ }
+
+ if(micSrc){try{micSrc.disconnect()}catch(e){}}
+ if(micStream){try{micStream.getTracks().forEach(t=>t.stop())}catch(e){}}
+
+ micStream=s;
+ // iOS Denetim Merkezi'nden mikrofon değiştirildiğinde akış kesilirse kaydı bozmadan yeniden bağlan
+ s.getAudioTracks().forEach(tr=>{
+  tr.onended=()=>{if(micOn)setTimeout(()=>startMic(true),300)};
+ });
+
+ micSrc=ctx.createMediaStreamSource(s);
+ micSrc.connect(pt);
+ micOn=true;
+ updateMicUI();
+ await updateMicList();
+ return true;
+}
+
+function updateMicUI(){
+ $('#mc').classList.toggle('on',micOn);
+ $('#mc').textContent=micOn?'🎙 Mikrofon: Açık':'🔇 Mikrofon: Kapalı';
+ $('#mon').classList.toggle('on',monOn);
+ $('#mon').textContent=monOn?'🎧 Sesimi Duy: Açık':'🎧 Sesimi Duy: Kapalı';
+ ap();
+ if(micOn){
+  say(monOn?'🎙 Mikrofon açık (Kendi sesini kulaklıktan duyuyorsun)':'🎙 Mikrofon açık (Sesin kayda girer, kulaklığa gelmez)');
+ }else{
+  say('🔇 Mikrofon kapalı (Sadece müzik çalar)');
+ }
+}
+
+$('#mc').onclick=async()=>{
+ if(!micSrc||!micStream||!micStream.active){await startMic(true);return}
+ micOn=!micOn;
+ micStream.getAudioTracks().forEach(x=>x.enabled=micOn);
+ updateMicUI();
+};
+
+$('#mon').onclick=()=>{
+ init();
+ monOn=!monOn;
+ updateMicUI();
+};
+
+$('#micSel').onchange=async()=>{
+ if(micOn || (rec&&rec.state==='recording')) await startMic(true);
+};
+if(navigator.mediaDevices && navigator.mediaDevices.addEventListener){
+ navigator.mediaDevices.addEventListener('devicechange',async()=>{
+  await updateMicList();
+  if(ctx && ctx.state==='suspended') await ctx.resume();
+ });
+}
+
+/* --- Demo Alt Yapı --- */
+function demo(){const sr=22050,bt=.6,N=Math.floor(sr*bt*64),d=new Float32Array(N),P=6.2832,f=m=>440*2**((m-69)/12);
+ const ch=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]].map(a=>a.map(f));
+ for(let i=0;i<N;i++){const t=i/sr,b=t/bt,c=ch[Math.floor(b/4)%4],q=b%1;let v=0;
+  for(const h of c)v+=Math.sin(P*h*t)*.07+Math.sin(P*h*2*t)*.025;
+  v+=Math.sin(P*c[0]/4*t)*.22*(.6+.4*Math.exp(-q*3));
+  v+=Math.sin(P*55*q+9*Math.exp(-q*40))*Math.exp(-q*6)*.55;
+  if(Math.floor(b)%2)v+=(Math.random()*2-1)*Math.exp(-q*12)*.22;
+  v+=(Math.random()*2-1)*Math.exp(-((b*2)%1)*35)*.07;
+  d[i]=Math.max(-1,Math.min(1,v))}
+ const o=new DataView(new ArrayBuffer(44+N*2)),s=(p,x)=>[...x].forEach((k,i)=>o.setUint8(p+i,k.charCodeAt(0)));
+ s(0,'RIFF');o.setUint32(4,36+N*2,true);s(8,'WAVEfmt ');o.setUint32(16,16,true);o.setUint16(20,1,true);o.setUint16(22,1,true);
+ o.setUint32(24,sr,true);o.setUint32(28,sr*2,true);o.setUint16(32,2,true);o.setUint16(34,16,true);s(36,'data');o.setUint32(40,N*2,true);
+ for(let i=0;i<N;i++)o.setInt16(44+i*2,d[i]*32767,true);
+ return URL.createObjectURL(new Blob([o],{type:'audio/wav'}))}
+const DEMO=['Işıklar yanıyor, sahne senin','Mikrofon elinde, sesini duy','Bu gece kimse yok bizden başka','Şarkı söyle, gökyüzü dinlesin','Her nota bir yıldız gibi parlar','Sen söyle, ben de eşlik edeyim','Ritim kalbimizde dans ediyor','Şarkı bitmesin, sahne senin'];
+
+/* --- Sözler (Elle Kaydırma & Tıklama) --- */
+const lyBox=$('#ly');
+['touchstart','wheel','mousedown'].forEach(ev=>lyBox.addEventListener(ev,()=>{
+ userScrolling=true;clearTimeout(scrollTmr);
+ scrollTmr=setTimeout(()=>userScrolling=false,3500);
+},{passive:true}));
+
+$('#lyMode').onclick=()=>{
+ autoScroll=!autoScroll;
+ $('#lyMode').textContent=autoScroll?'🔄 Otomatik Kaydır':'✋ Elle Kaydır';
+ $('#lyMode').classList.toggle('on',autoScroll);
+};
+
+function fit(){if(lines.some(l=>l.t==null)&&isFinite(music.duration))lines.forEach((l,i)=>l.t=i*music.duration/lines.length)}
+function setLy(txt){
+ lines=[];
+ txt.split(/?
+/).forEach(x=>{
+  const m=x.match(/^\[(\d+):(\d+(?:\.\d+)?)\]\s*(.*)/);
+  if(m)lines.push({t:+m[1]*60+ +m[2],s:m[3]});
+  else if(x.trim()&&!/^\[[a-z]+:/i.test(x))lines.push({t:null,s:x.trim()});
+ });
+ fit();cur=-1;lyBox.innerHTML='';
+ lines.forEach((l,idx)=>{
+  const p=document.createElement('p');
+  p.textContent=l.s;
+  p.onclick=()=>{
+   cur=idx;
+   [...lyBox.children].forEach((el,j)=>el.classList.toggle('on',j===idx));
+   if(autoScroll && l.t!=null && isFinite(music.duration)) music.currentTime=l.t;
+  };
+  lyBox.append(p);
+ });
+}
+function loadDemo(){music.src=demoURL;$('#sn').textContent='Demo alt yapı';setLy(DEMO.map((x,i)=>`[0:${(i*4.8).toFixed(2)}]${x}`).join('
+'));setupMediaSession()}
+
+function tick(){
+ const t=music.currentTime;
+ if(autoScroll && !music.paused){
+  let i=-1;lines.forEach((l,j)=>{if(l.t!=null&&l.t<=t)i=j});
+  if(i!==cur){
+   cur=i;
+   [...lyBox.children].forEach((p,j)=>p.classList.toggle('on',j===i));
+   const p=lyBox.children[i];
+   if(p && !userScrolling) lyBox.scrollTo({top:p.offsetTop-lyBox.clientHeight/2+p.clientHeight/2,behavior:'smooth'});
+  }
+ }
+ $('#sk').value=t;
+ requestAnimationFrame(tick);
+}
+
+music.onloadedmetadata=()=>{$('#sk').max=music.duration||38;fit();setupMediaSession()};
+music.onplay=()=>{
+ $('#pl').textContent='⏸ Duraklat';
+ reqWakeLock();
+ if(ctx&&ctx.state==='suspended')ctx.resume();
+};
+music.onpause=()=>$('#pl').textContent='▶ Çal';
+music.onended=()=>stopRec();
+music.onerror=()=>{$('#sn').textContent='⚠ Dosya çalınamadı, mp3, m4a veya wav dene'};
+$('#sk').oninput=e=>music.currentTime=+e.target.value;
+$('#pl').onclick=async()=>{init();await ctx.resume();music.paused?music.play():music.pause()};
+
+/* --- Arayüz & Kontroller --- */
+$$('nav button').forEach((b,i)=>b.onclick=()=>{$$('.pg').forEach((p,j)=>p.classList.toggle('on',i==j));$$('nav button').forEach((x,j)=>x.classList.toggle('on',i==j))});
+$$('[data-t]').forEach(b=>b.onclick=()=>document.documentElement.dataset.theme=b.dataset.t);
+$('#ky').innerHTML=NN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+$('#ky').onchange=e=>at.key=+e.target.value;$('#sc').onchange=e=>at.sc=+e.target.value;$('#sp').oninput=e=>at.sp=+e.target.value;
+
+function setAT(v){at.on=v;[['#at',''],['#at2','Autotune: ']].forEach(([id,p])=>{const b=$(id);b.textContent=p+(v?'Açık':'Kapalı');b.classList.toggle('on',v)})}
+$('#at').onclick=$('#at2').onclick=async()=>{setAT(!at.on);if(at.on && !micOn)await startMic()};
+
+[['Mikrofon Sesi','vg',0,2,.01],['Müzik Sesi','mg',0,1.5,.01],['Yankı (Reverb)','rg',0,1.2,.01],['Eko','eg',0,.8,.01],['Bas','lo',-12,12,.5],['Tiz','hi',-12,12,.5]].forEach(([n,k,a,b,s])=>{
+ const l=document.createElement('label');l.append(n);const i=document.createElement('input');Object.assign(i,{type:'range',min:a,max:b,step:s,value:V[k]});i.dataset.k=k;
+ i.oninput=e=>{V[k]=+e.target.value;ap();$$('[data-k]').forEach(x=>{if(x.dataset.k==k)x.value=V[k]})};l.append(i);$('#sl').append(l);
+ if(['vg','mg','rg','eg'].includes(k)){const l2=l.cloneNode(true),i2=l2.querySelector('input');i2.value=V[k];i2.oninput=i.oninput;$('#qs').append(l2)}
+});
+const PR={'Doğal':[.08,0,0,0,1],'Stüdyo':[.3,.08,3,3,1.6],'Salon':[.6,.12,2,2,2.5],'Katedral':[1,.2,0,2,4],'Eko':[.2,.45,0,1,1.2]};
+Object.entries(PR).forEach(([n,p])=>{const b=document.createElement('button');b.className='b';b.textContent=n;
+ b.onclick=()=>{[V.rg,V.eg,V.lo,V.hi,SZ]=p;$$('[data-k]').forEach(i=>i.value=V[i.dataset.k]);ap();if(ctx)setIR(SZ)};$('#pr').append(b)});
+
+$('#dm').onclick=loadDemo;
+$('#fa').onchange=e=>{const f=e.target.files[0];if(f){music.src=URL.createObjectURL(f);$('#sn').textContent=f.name;setupMediaSession()}};
+$('#fl').onchange=async e=>{const f=e.target.files[0];if(f)setLy(await f.text())};
+
+/* --- Kayıt --- */
+const RT=['audio/mp4','audio/webm;codecs=opus','audio/webm'];let tmr,t0,recs=0;
+
+function stopRec(){
+ const was=rec&&rec.state==='recording';
+ clearInterval(tmr);
+ if(was)try{rec.stop()}catch(e){}
+ music.pause();
+ $('#rc').textContent='⏺ Kayıt';
+ $('#rc').classList.add('big');
+ if(was)say('✅ Kayıt tamamlandı! Aşağıdaki listeden dinle ve indir.');
+}
+
+$('#rc').onclick=async()=>{
+ if(rec&&rec.state==='recording')return stopRec();
+ if(typeof MediaRecorder==='undefined')return say('Tarayıcı kayıt desteklemiyor. Safari veya Chrome kullan.');
+ init();await ctx.resume();
+ if(!micOn){if(!(await startMic()))return}
+ await reqWakeLock();
+ const mt=RT.find(x=>MediaRecorder.isTypeSupported(x));
+ try{rec=mt?new MediaRecorder(rd.stream,{mimeType:mt}):new MediaRecorder(rd.stream)}
+ catch(e){return say('Kayıt başlatılamadı ('+e.name+')')}
+ chunks=[];
+ rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+ rec.onstop=()=>addRec(new Blob(chunks,{type:rec.mimeType||mt||'audio/mp4'}));
+ music.currentTime=0;
+ rec.start(1000);
+ try{await music.play()}catch(e){}
+ t0=Date.now();
+ $('#rc').textContent='⏹ Bitir';
+ $('#rc').classList.remove('big');
+ tmr=setInterval(()=>{
+  if(ctx&&ctx.state==='suspended')ctx.resume();
+  say('🔴 Kayıt sürüyor: '+Math.floor((Date.now()-t0)/1000)+' sn '+(monOn?'(Sesini duyuyorsun)':'(Sessiz monitör)'));
+ },500);
+};
+
+function addRec(b){
+ const u=URL.createObjectURL(b),nm=($('#sn').textContent.split('.')[0]||'kayit')+'-'+(++recs)+(b.type.includes('mp4')?'.m4a':'.webm'),
+ d=document.createElement('div'),h=document.createElement('b'),a=document.createElement('audio'),s=document.createElement('button');
+ d.className='g';h.textContent=nm;a.controls=true;a.playsInline=true;a.src=u;a.style.cssText='width:100%;margin:8px 0';s.className='b';s.textContent='⬇ İndir / Paylaş';
+ s.onclick=async()=>{
+  const x=document.createElement('a');x.href=u;x.download=nm;document.body.append(x);x.click();x.remove();
+  s.textContent='✔ İndirme Başlatıldı';
+ };
+ d.append(h,a,s);const rl=$('#rl');if(!rl.querySelector('.g'))rl.innerHTML='';rl.prepend(d);
+}
+
+$('#tp').oninput=e=>{const v=+e.target.value;music.defaultPlaybackRate=music.playbackRate=v;music.preservesPitch=music.webkitPreservesPitch=true;$('#tv').textContent=v.toFixed(2)+'×'};
+demoURL=demo();loadDemo();tick();updateMicList();
+</script></body></html>
