@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahne Karaoke</title>
+<style>
+:root{--a:#ff4fd8;--b:#6a5cff;--c:#12082e;--g:rgba(255,255,255,.11);--l:rgba(255,255,255,.26);--t:#fff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=okyanus]{--a:#27e1ff;--b:#2a6bff;--c:#04162e}
+:root[data-theme=gunbatimi]{--a:#ffb347;--b:#ff4d6d;--c:#2b0a1a}
+:root[data-theme=orman]{--a:#7dffb0;--b:#12a37f;--c:#04201a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:14px 14px 110px;font-family:"Avenir Next","Trebuchet MS",system-ui,sans-serif;color:var(--t);background:radial-gradient(circle at 10% 8%,var(--b),transparent 55%),radial-gradient(circle at 90% 92%,var(--a),transparent 52%),var(--c);background-attachment:fixed;transition:background .5s}
+.g{background:var(--g);border:1px solid var(--l);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-radius:22px;padding:14px;margin-bottom:12px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0}
+.b,select{background:var(--g);color:var(--t);border:1px solid var(--l);border-radius:14px;padding:10px 14px;font:inherit;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.b.on,.big{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}
+input[type=range]{width:100%;accent-color:var(--a)}
+label{display:block;margin:10px 0;font-size:.9rem}
+h3{margin:18px 4px 8px}
+.pg{display:none}.pg.on{display:block}
+#ly{position:relative;height:30vh;overflow-y:auto;scrollbar-width:none;text-align:center;padding:11vh 4px}
+#ly p{margin:14px 0;font-size:1.2rem;opacity:.38;transition:all .35s}
+#ly p.on{opacity:1;font-size:1.65rem;font-weight:700;color:var(--a);text-shadow:0 0 22px var(--a)}
+.meter{height:6px;border-radius:9px;background:var(--g);overflow:hidden;margin-top:12px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+#nt{margin-top:8px;font-size:1.05rem;text-align:center}
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;padding:8px;margin:0;z-index:5}
+nav button{flex:1;background:none;border:0;color:var(--t);font:inherit;font-size:.78rem;padding:8px 2px;border-radius:16px;opacity:.65}
+nav button.on{opacity:1;background:var(--g);box-shadow:inset 0 0 0 1px var(--l)}
+nav button span{display:block;font-size:1.3rem}
+small{opacity:.75;display:block;line-height:1.4}
+#st{margin-top:10px;text-align:center;font-size:.95rem;min-height:1.4em}
+</style></head><body>
+<header class="g row"><b style="font-size:1.2rem">🎤 Sahne</b><span id="sn" style="opacity:.8;font-size:.85rem">Demo alt yapı</span></header>
+
+<section class="pg on" id="p0">
+ <div class="g">
+  <div id="ly"></div>
+  <input type="range" id="sk" min="0" max="38" step=".1" value="0">
+  <div class="row"><button class="b" id="pl">▶ Çal</button><button class="b" id="mc">🎙 Mikrofon</button><button class="b big" id="rc">⏺ Kayıt</button></div>
+  <div class="meter"><i id="lv"></i></div><div id="st">Kulaklık tak, sonra 🎙 Mikrofon’a bas.</div>
+ </div>
+ <div class="g"><div class="row"><b>🎛 Canlı ayar</b><button class="b" id="at2">Autotune: Kapalı</button></div><div id="qs"></div><label>Tempo <b id="tv">1.00×</b><input type="range" id="tp" min=".6" max="1.6" step=".01" value="1"></label></div><h3>Kayıtlarım</h3><div id="rl"><small>Henüz kayıt yok. Kulaklık takıp Kayıt’a bas.</small></div>
+</section>
+
+<section class="pg" id="p1">
+ <div class="g">
+  <div class="row"><b>🎚 Autotune</b><button class="b" id="at">Kapalı</button></div>
+  <div class="row"><select id="ky"></select><select id="sc"><option value="0">Kromatik</option><option value="1">Majör</option><option value="2">Minör</option></select></div>
+  <label>Düzeltme hızı (yumuşak ↔ robot)<input type="range" id="sp" min="0" max="1" step=".01" value=".5"></label>
+  <div id="nt">Açınca mikrofon izni istenir</div>
+ </div>
+ <div class="g"><b>✨ Ses efekti</b><div class="row" id="pr"></div><div id="sl"></div></div>
+</section>
+
+<section class="pg" id="p2">
+ <div class="g">
+  <div class="row"><button class="b" id="dm">🎵 Demo alt yapı</button></div>
+  <div class="row"><label class="b">📁 Alt yapı yükle<input type="file" id="fa" hidden></label>
+  <label class="b">📝 Söz yükle<input type="file" id="fl" hidden></label></div>
+  <small>Önce alt yapıyı (mp3, m4a, wav), sonra sözleri yükle. Telefondaki tüm dosyalar listelenir. Spotify, Apple Music gibi uygulamalardan indirilen şarkılar korumalıdır, dosya olarak yüklenemez. .lrc dosyası zamanlı akar; .txt dosyası şarkıya eşit aralıkla yayılır.</small>
+ </div>
+</section>
+
+<section class="pg" id="p3">
+ <div class="g"><b>🎨 Cam tema</b>
+  <div class="row"><button class="b" data-t="neon">Neon</button><button class="b" data-t="okyanus">Okyanus</button><button class="b" data-t="gunbatimi">Gün batımı</button><button class="b" data-t="orman">Orman</button></div>
+ </div>
+</section>
+
+<nav class="g">
+ <button class="on"><span>🎤</span>Söyle</button><button><span>🎛</span>Efekt</button><button><span>🎵</span>Şarkı</button><button><span>🎨</span>Tema</button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],SC=[[0,1,2,3,4,5,6,7,8,9,10,11],[0,2,4,5,7,9,11],[0,2,3,5,7,8,10]];
+const at={on:false,key:0,sc:0,sp:.5},V={vg:1,mg:.7,rg:.3,eg:.15,lo:0,hi:0};
+let ctx,mg,vg,lo,hi,rg,eg,conv,pt,rd,micSrc,rec,chunks=[],lines=[],cur=-1,w=0,ph=0,r=1,SZ=1.6,demoURL;
+const music=new Audio();music.preload='auto';
+const L=32768,M=L-1,buf=new Float32Array(L),tmp=new Float32Array(2200);
+const rd1=d=>{const p=w-d,i=Math.floor(p),f=p-i;return buf[i&M]*(1-f)+buf[(i+1)&M]*f};
+
+/* --- autotune: YIN pitch detection + iki uçlu gecikme hattı ses kaydırıcı --- */
+function yin(x,sr){const H=1024,mn=Math.max(2,sr/800|0),mx=Math.min(1100,sr/80|0),d=new Float32Array(mx+2);let run=0;d[0]=1;
+ for(let t=1;t<=mx;t++){let s=0;for(let i=0;i<H;i++){const e=x[i]-x[i+t];s+=e*e}run+=s;d[t]=run?s*t/run:1}
+ for(let t=mn;t<mx;t++)if(d[t]<.15){while(t+1<mx&&d[t+1]<d[t])t++;const a=d[t-1],b=d[t],c=d[t+1],q=a-2*b+c;return sr/(t+(q?(a-c)/(2*q):0))}
+ return 0}
+function tune(e){const x=e.inputBuffer.getChannelData(0),y=e.outputBuffer.getChannelData(0),n=x.length,sr=ctx.sampleRate;
+ let s=0;for(let i=0;i<n;i++)s+=x[i]*x[i];const lv=Math.sqrt(s/n);$('#lv').style.width=Math.min(100,lv*350)+'%';
+ if(!at.on){y.set(x);return}
+ for(let i=0;i<2200;i++)tmp[i]=buf[(w-2200+i)&M];
+ const f=lv>.012?yin(tmp,sr):0;let tg=1;
+ if(f){const m=69+12*Math.log2(f/440),rm=Math.round(m);let bn=rm,bd=9;
+  for(let k=rm-2;k<=rm+2;k++){const dd=Math.abs(k-m);if(SC[at.sc].includes(((k-at.key)%12+12)%12)&&dd<bd){bd=dd;bn=k}}
+  tg=2**((bn-m)/12);$('#nt').textContent='🎶 '+NN[(rm%12+12)%12]+' → '+NN[(bn%12+12)%12]}
+ tg=Math.min(1.2,Math.max(.84,tg));
+ const r1=r+(tg-r)*(.12+.88*at.sp),W=sr*.045|0;
+ for(let i=0;i<n;i++){const rr=r+(r1-r)*i/n;buf[w]=x[i];w=(w+1)&M;ph+=(1-rr)/W;ph-=Math.floor(ph);
+  const g=.5-.5*Math.cos(6.2832*ph);y[i]=rd1(ph*W)*g+rd1(((ph+.5)%1)*W)*(1-g)}
+ r=r1}
+
+/* --- ses grafiği --- */
+function setIR(s){const sr=ctx.sampleRate,n=sr*s|0,b=ctx.createBuffer(2,n,sr);
+ for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n)**3}conv.buffer=b}
+function ap(){if(!ctx)return;vg.gain.value=V.vg;mg.gain.value=V.mg;rg.gain.value=V.rg;eg.gain.value=V.eg;lo.gain.value=V.lo;hi.gain.value=V.hi}
+function init(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)();
+ const mk=t=>ctx.createBiquadFilter(),src=ctx.createMediaElementSource(music),master=ctx.createGain(),dl=ctx.createDelay(1),fb=ctx.createGain(),dry=ctx.createGain(),comp=ctx.createDynamicsCompressor();
+ mg=ctx.createGain();vg=ctx.createGain();rg=ctx.createGain();eg=ctx.createGain();conv=ctx.createConvolver();rd=ctx.createMediaStreamDestination();
+ pt=ctx.createScriptProcessor(1024,1,1);pt.onaudioprocess=tune;
+ lo=mk();lo.type='lowshelf';lo.frequency.value=200;hi=mk();hi.type='highshelf';hi.frequency.value=4000;
+ dl.delayTime.value=.32;fb.gain.value=.35;
+ src.connect(mg);mg.connect(master);
+ pt.connect(lo);lo.connect(hi);hi.connect(comp);comp.connect(vg);
+ vg.connect(dry);dry.connect(master);vg.connect(conv);conv.connect(rg);rg.connect(master);
+ vg.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(eg);eg.connect(master);
+ master.connect(ctx.destination);master.connect(rd);setIR(SZ);ap()}
+async function startMic(){init();await ctx.resume();if(micSrc)return true;
+ try{const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  micSrc=ctx.createMediaStreamSource(s);micSrc.connect(pt);return true}
+ catch(e){$('#nt').textContent='Mikrofon izni verilmedi. Tarayıcı ayarlarından izin ver.';return false}}
+
+/* --- demo alt yapı (kodla üretilir, telifsiz) --- */
+function demo(){const sr=22050,bt=.6,N=Math.floor(sr*bt*64),d=new Float32Array(N),P=6.2832,f=m=>440*2**((m-69)/12);
+ const ch=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]].map(a=>a.map(f));
+ for(let i=0;i<N;i++){const t=i/sr,b=t/bt,c=ch[Math.floor(b/4)%4],q=b%1;let v=0;
+  for(const h of c)v+=Math.sin(P*h*t)*.07+Math.sin(P*h*2*t)*.025;
+  v+=Math.sin(P*c[0]/4*t)*.22*(.6+.4*Math.exp(-q*3));
+  v+=Math.sin(P*55*q+9*Math.exp(-q*40))*Math.exp(-q*6)*.55;
+  if(Math.floor(b)%2)v+=(Math.random()*2-1)*Math.exp(-q*12)*.22;
+  v+=(Math.random()*2-1)*Math.exp(-((b*2)%1)*35)*.07;
+  d[i]=Math.max(-1,Math.min(1,v))}
+ const o=new DataView(new ArrayBuffer(44+N*2)),s=(p,x)=>[...x].forEach((k,i)=>o.setUint8(p+i,k.charCodeAt(0)));
+ s(0,'RIFF');o.setUint32(4,36+N*2,true);s(8,'WAVEfmt ');o.setUint32(16,16,true);o.setUint16(20,1,true);o.setUint16(22,1,true);
+ o.setUint32(24,sr,true);o.setUint32(28,sr*2,true);o.setUint16(32,2,true);o.setUint16(34,16,true);s(36,'data');o.setUint32(40,N*2,true);
+ for(let i=0;i<N;i++)o.setInt16(44+i*2,d[i]*32767,true);
+ return URL.createObjectURL(new Blob([o],{type:'audio/wav'}))}
+const DEMO=['Işıklar yanıyor, sahne senin','Mikrofon elinde, sesini duy','Bu gece kimse yok bizden başka','Şarkı söyle, gökyüzü dinlesin','Her nota bir yıldız gibi parlar','Sen söyle, ben de eşlik edeyim','Ritim kalbimizde dans ediyor','Şarkı bitmesin, sahne senin'];
+
+/* --- sözler --- */
+function fit(){if(lines.some(l=>l.t==null)&&isFinite(music.duration))lines.forEach((l,i)=>l.t=i*music.duration/lines.length)}
+function setLy(txt){lines=[];txt.split(/\r?\n/).forEach(x=>{const m=x.match(/^\[(\d+):(\d+(?:\.\d+)?)\]\s*(.*)/);
+ if(m)lines.push({t:+m[1]*60+ +m[2],s:m[3]});else if(x.trim()&&!/^\[[a-z]+:/i.test(x))lines.push({t:null,s:x.trim()})});
+ fit();cur=-1;$('#ly').innerHTML='';lines.forEach(l=>{const p=document.createElement('p');p.textContent=l.s;$('#ly').append(p)})}
+function loadDemo(){music.src=demoURL;$('#sn').textContent='Demo alt yapı';setLy(DEMO.map((x,i)=>`[0:${(i*4.8).toFixed(2)}]${x}`).join('\n'))}
+function tick(){const t=music.currentTime;let i=-1;lines.forEach((l,j)=>{if(l.t!=null&&l.t<=t)i=j});
+ if(i!=cur){cur=i;const ly=$('#ly');[...ly.children].forEach((p,j)=>p.classList.toggle('on',j==i));
+  const p=ly.children[i];if(p)ly.scrollTo({top:p.offsetTop-ly.clientHeight/2+p.clientHeight/2,behavior:'smooth'})}
+ $('#sk').value=t;requestAnimationFrame(tick)}
+music.onloadedmetadata=()=>{$('#sk').max=music.duration;fit()};
+music.onplay=()=>$('#pl').textContent='⏸ Duraklat';music.onpause=()=>$('#pl').textContent='▶ Çal';music.onended=()=>stopRec();music.onerror=()=>{$('#sn').textContent='⚠ Dosya çalınamadı, mp3, m4a veya wav dene'};
+$('#sk').oninput=e=>music.currentTime=+e.target.value;
+$('#pl').onclick=async()=>{init();await ctx.resume();music.paused?music.play():music.pause()};
+
+/* --- kayıt --- */
+function stopRec(){if(rec&&rec.state=='recording'){rec.stop();music.pause()}$('#rc').textContent='⏺ Kayıt';$('#rc').classList.add('big')}
+$('#rc').onclick=async()=>{if(rec&&rec.state=='recording')return stopRec();if(!(await startMic()))return;
+ music.currentTime=0;chunks=[];rec=new MediaRecorder(rd.stream);rec.ondataavailable=e=>chunks.push(e.data);
+ rec.onstop=()=>{const u=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType})),d=document.createElement('div');d.className='g';
+  const b=document.createElement('b');b.textContent=$('#sn').textContent;const a=document.createElement('audio');a.controls=true;a.src=u;a.style.width='100%';
+  d.append(b,a);const rl=$('#rl');if(!rl.querySelector('.g'))rl.innerHTML='';rl.prepend(d)};
+ rec.start();music.play();$('#rc').textContent='⏹ Bitir'};
+
+/* --- arayüz --- */
+$$('nav button').forEach((b,i)=>b.onclick=()=>{$$('.pg').forEach((p,j)=>p.classList.toggle('on',i==j));$$('nav button').forEach((x,j)=>x.classList.toggle('on',i==j))});
+$$('[data-t]').forEach(b=>b.onclick=()=>document.documentElement.dataset.theme=b.dataset.t);
+$('#ky').innerHTML=NN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+$('#ky').onchange=e=>at.key=+e.target.value;$('#sc').onchange=e=>at.sc=+e.target.value;$('#sp').oninput=e=>at.sp=+e.target.value;
+$('#at').onclick=async()=>{at.on=!at.on;$('#at').textContent=at.on?'Açık':'Kapalı';$('#at').classList.toggle('on',at.on);if(at.on)await startMic()};
+[['Mikrofon','vg',0,2,.01],['Müzik','mg',0,1.5,.01],['Yankı (reverb)','rg',0,1.2,.01],['Eko','eg',0,.8,.01],['Bas','lo',-12,12,.5],['Tiz','hi',-12,12,.5]].forEach(([n,k,a,b,s])=>{
+ const l=document.createElement('label');l.append(n);const i=document.createElement('input');Object.assign(i,{type:'range',min:a,max:b,step:s,value:V[k]});i.dataset.k=k;
+ i.oninput=e=>{V[k]=+e.target.value;ap();$$('[data-k]').forEach(x=>{if(x.dataset.k==k)x.value=V[k]})};l.append(i);$('#sl').append(l);if(['vg','mg','rg','eg'].includes(k)){const l2=l.cloneNode(true),i2=l2.querySelector('input');i2.value=V[k];i2.oninput=i.oninput;$('#qs').append(l2)}});
+const PR={'Doğal':[.08,0,0,0,1],'Stüdyo':[.3,.08,3,3,1.6],'Salon':[.6,.12,2,2,2.5],'Katedral':[1,.2,0,2,4],'Eko':[.2,.45,0,1,1.2]};
+Object.entries(PR).forEach(([n,p])=>{const b=document.createElement('button');b.className='b';b.textContent=n;
+ b.onclick=()=>{[V.rg,V.eg,V.lo,V.hi,SZ]=p;$$('[data-k]').forEach(i=>i.value=V[i.dataset.k]);ap();if(ctx)setIR(SZ)};$('#pr').append(b)});
+$('#dm').onclick=loadDemo;
+$('#fa').onchange=e=>{const f=e.target.files[0];if(f){music.src=URL.createObjectURL(f);$('#sn').textContent=f.name;setLy('');$('#ly').innerHTML='<p>Söz yüklemek için Şarkı sekmesine git</p>'}};
+$('#fl').onchange=async e=>{const f=e.target.files[0];if(f)setLy(await f.text())};
+/* v2: canlı mikrofon, kayıt, indirme, tempo */
+const RT=['audio/mp4','audio/webm;codecs=opus','audio/webm'];let tmr,t0,recs=0;
+const say=t=>{$('#st').textContent=t};
+async function startMic(){init();await ctx.resume();if(micSrc)return true;say('Mikrofon açılıyor…');const md=navigator.mediaDevices;
+ if(!md||!md.getUserMedia){say('Bu görünüm mikrofona izin vermiyor. Sayfayı Chrome veya Safari’de doğrudan aç.');return false}
+ let s;try{s=await md.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+ catch(e){try{s=await md.getUserMedia({audio:true})}catch(e2){say('Mikrofon açılamadı ('+e2.name+'). İzin ver veya sayfayı Chrome/Safari’de doğrudan aç.');return false}}
+ micSrc=ctx.createMediaStreamSource(s);micSrc.connect(pt);$('#mc').classList.add('on');say('🎙 Mikrofon açık. Kendi sesini kulaklıkta duyarsın.');return true}
+$('#mc').onclick=async()=>{if(!micSrc){await startMic();return}const tr=micSrc.mediaStream.getAudioTracks(),on=!tr[0].enabled;tr.forEach(x=>x.enabled=on);$('#mc').classList.toggle('on',on);say(on?'🎙 Mikrofon açık':'🔇 Mikrofon sessiz')};
+function setAT(v){at.on=v;[['#at',''],['#at2','Autotune: ']].forEach(([id,p])=>{const b=$(id);b.textContent=p+(v?'Açık':'Kapalı');b.classList.toggle('on',v)})}
+$('#at').onclick=$('#at2').onclick=async()=>{setAT(!at.on);if(at.on)await startMic()};
+function stopRec(){const was=rec&&rec.state=='recording';clearInterval(tmr);if(was)rec.stop();music.pause();$('#rc').textContent='⏺ Kayıt';$('#rc').classList.add('big');if(was)say('Kayıt bitti. Aşağıdan dinle ve indir.')}
+$('#rc').onclick=async()=>{if(rec&&rec.state=='recording')return stopRec();
+ if(typeof MediaRecorder=='undefined')return say('Bu tarayıcı kayıt almayı desteklemiyor. Chrome veya Safari kullan.');
+ init();ctx.resume();if(!(await startMic()))return;
+ const mt=RT.find(x=>MediaRecorder.isTypeSupported(x));
+ try{rec=mt?new MediaRecorder(rd.stream,{mimeType:mt}):new MediaRecorder(rd.stream)}catch(e){return say('Kayıt başlatılamadı ('+e.name+')')}
+ chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+ rec.onstop=()=>addRec(new Blob(chunks,{type:rec.mimeType||mt||'audio/webm'}));
+ music.currentTime=0;rec.start(1000);
+ try{await music.play()}catch(e){rec.onstop=null;rec.stop();return say('Müzik başlamadı. Kayıt’a bir kez daha bas.')}
+ t0=Date.now();$('#rc').textContent='⏹ Bitir';$('#rc').classList.remove('big');
+ tmr=setInterval(()=>say('🔴 Kayıt sürüyor: '+Math.floor((Date.now()-t0)/1000)+' sn'),500)};
+function addRec(b){const u=URL.createObjectURL(b),nm=($('#sn').textContent.split('.')[0]||'kayit')+'-'+(++recs)+(b.type.includes('mp4')?'.mp4':'.webm'),
+ d=document.createElement('div'),h=document.createElement('b'),a=document.createElement('audio'),s=document.createElement('button');
+ d.className='g';h.textContent=nm;a.controls=true;a.src=u;a.style.cssText='width:100%;margin:8px 0';s.className='b';s.textContent='⬇ İndir';
+ s.onclick=async()=>{try{const dl=window.claude?await window.claude.use('downloads'):null;if(!dl){const x=document.createElement('a');x.href=u;x.download=nm;x.click();s.textContent='İndirme başlatıldı';return}
+  await dl.save({filename:nm,data:b});s.textContent='✔ Kaydedildi'}catch(e){s.textContent=e&&e.code=='declined'?'⬇ İndir':'İndirilemedi'}};
+ d.append(h,a,s);const rl=$('#rl');if(!rl.querySelector('.g'))rl.innerHTML='';rl.prepend(d)}
+$('#tp').oninput=e=>{const v=+e.target.value;music.defaultPlaybackRate=music.playbackRate=v;music.preservesPitch=music.webkitPreservesPitch=true;$('#tv').textContent=v.toFixed(2)+'×'};
+demoURL=demo();loadDemo();tick();
+</script></body></html>
